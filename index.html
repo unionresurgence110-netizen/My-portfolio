@@ -1,0 +1,2313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Lilakant Studio — Anime Card Vault</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Poppins:wght@400;500;600&display=swap');
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  background:#080812;
+  color:#fff;
+  font-family:Poppins,sans-serif;
+}
+
+:root{
+  --cyan:#38d9ff;
+  --pink:#ff5ab8;
+  --purple:#b46cff;
+  --gold:#ffd166;
+  --green:#65f5a4;
+  --orange:#ff765c;
+  --muted:#aaa8c8;
+}
+
+/* MAIN */
+
+main{
+  min-height:100vh;
+  padding:28px 18px 50px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 15% 8%,#342052 0,transparent 32%),
+    radial-gradient(circle at 90% 90%,#123b54 0,transparent 35%),
+    #080812;
+}
+
+.brand{
+  font:800 13px Orbitron;
+  letter-spacing:2px;
+  color:#9beaff;
+}
+
+.eyebrow{
+  margin-top:9vh;
+  color:var(--gold);
+  font-size:11px;
+  letter-spacing:3px;
+}
+
+h1{
+  font:900 clamp(32px,6.5vw,72px) Orbitron;
+  margin:18px 0;
+  line-height:1.2;
+  background:linear-gradient(
+    90deg,
+    var(--cyan),
+    var(--purple),
+    var(--pink)
+  );
+  color:transparent;
+  background-clip:text;
+  -webkit-background-clip:text;
+}
+
+.pika-inline{
+  display:inline-block;
+  width:90px;
+  height:90px;
+  vertical-align:middle;
+  background:#ffffff12;
+  border-radius:12px;
+  overflow:hidden;
+  margin:0 10px;
+  transform:translateY(-4px);
+}
+
+.pika-inline img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.sub{
+  max-width:640px;
+  margin:0 auto;
+  color:var(--muted);
+  line-height:1.8;
+  font-size:14px;
+}
+
+/* FOLDER */
+
+.folder-wrap{
+  width:170px;
+  height:130px;
+  margin:20px auto;
+  position:relative;
+}
+
+.folder{
+  position:absolute;
+  left:25px;
+  top:31px;
+  width:120px;
+  height:88px;
+  border:0;
+  border-radius:15px;
+  background:linear-gradient(#ffd166,#d88d22);
+  box-shadow:0 15px 45px #ffd16644;
+  cursor:pointer;
+}
+
+.folder:before{
+  content:"";
+  position:absolute;
+  top:-17px;
+  left:9px;
+  width:52px;
+  height:27px;
+  background:#e9a83c;
+  border-radius:10px 10px 0 0;
+}
+
+.hint{
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:2px;
+}
+
+/* PROJECT PREVIEW */
+
+.project-preview{
+  margin:30px auto 0;
+  width:160px;
+  border:1px solid #ffffff33;
+  border-radius:22px;
+  background:#ffffff10;
+  padding:10px;
+  cursor:pointer;
+  transition:transform .3s ease;
+}
+
+.project-preview:hover{
+  transform:translateY(-5px);
+}
+
+.project-preview img{
+  width:100%;
+  height:110px;
+  object-fit:cover;
+  border-radius:12px;
+}
+
+/* TRUST */
+
+.trust-section{
+  max-width:900px;
+  margin:50px auto 0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  text-align:left;
+}
+
+.trust-box{
+  border:1px solid #ffffff1a;
+  background:#ffffff08;
+  border-radius:16px;
+  padding:16px;
+}
+
+.trust-box h4{
+  font:700 12px Orbitron;
+  margin:0 0 8px;
+}
+
+.trusted h4{
+  color:var(--green);
+}
+
+.untrusted h4{
+  color:var(--orange);
+}
+
+.trust-box p{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.trust-img{
+  width:100%;
+  height:90px;
+  object-fit:cover;
+  border-radius:10px;
+  margin-top:10px;
+  border:1px solid #ffffff15;
+}
+
+.trust-img.desktop-only{
+  display:block;
+}
+
+.discord{
+  display:inline-flex;
+  gap:6px;
+  margin-top:10px;
+  font-size:11px;
+  color:#fff;
+  background:#5865f2;
+  padding:6px 12px;
+  border-radius:20px;
+  text-decoration:none;
+}
+
+/* VAULT */
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:#05040cf0;
+  backdrop-filter:blur(15px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  padding:20px;
+}
+
+.overlay.show{
+  display:flex;
+}
+
+.close,
+.gallery-close,
+.focused-close{
+  position:absolute;
+  right:20px;
+  top:20px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:1px solid #ffffff33;
+  background:#ffffff12;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  z-index:300;
+}
+
+.cards{
+  width:min(1120px,100%);
+  height:min(720px,calc(100vh - 70px));
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* CARD */
+
+.card{
+  position:absolute;
+  width:225px;
+  height:335px;
+  perspective:1200px;
+  cursor:pointer;
+  opacity:0;
+  z-index:1;
+  transition:
+    transform .6s cubic-bezier(.2,.8,.2,1),
+    opacity .4s ease;
+}
+
+.inner{
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .7s ease;
+}
+
+.face{
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  border:2px solid var(--c);
+  border-radius:20px;
+  padding:17px;
+  background:linear-gradient(145deg,#29203f,#0c0a16);
+  box-shadow:
+    0 0 35px #0009,
+    inset 0 0 0 4px #ffffff08;
+}
+
+.back{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  text-align:center;
+}
+
+.sigil{
+  font-size:65px;
+  color:var(--c);
+  text-shadow:0 0 25px var(--c);
+}
+
+.back h2{
+  font:800 19px Orbitron;
+  color:var(--c);
+}
+
+.rarity{
+  font-size:10px;
+  letter-spacing:3px;
+  color:#ddd;
+}
+
+/* FRONT + SCROLL */
+
+.front{
+  transform:rotateY(180deg);
+  text-align:left;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+}
+
+.front::-webkit-scrollbar{
+  width:5px;
+}
+
+.front::-webkit-scrollbar-thumb{
+  background:#ffffff35;
+  border-radius:10px;
+}
+
+.front h3{
+  font:800 18px Orbitron;
+  color:var(--c);
+  margin:0 0 10px;
+}
+
+.front p,
+.front li{
+  font-size:12px;
+  line-height:1.7;
+  color:#ddd;
+  margin:0 0 10px;
+}
+
+/* PROJECT IMAGE */
+
+.project-grid{
+  display:block;
+  margin-top:12px;
+}
+
+.project-slot{
+  width:100%;
+  border:1px solid #ffffff2b;
+  background:#ffffff0c;
+  border-radius:10px;
+  padding:6px;
+  cursor:pointer;
+  transition:transform .25s ease;
+}
+
+.project-slot:hover{
+  transform:scale(1.02);
+}
+
+.project-slot img{
+  display:block;
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:7px;
+}
+
+/* DESKTOP POSITIONS */
+
+.card:nth-child(1){
+  --c:var(--cyan);
+  --x:-310px;
+  --y:5px;
+  --r:-17deg;
+}
+
+.card:nth-child(2){
+  --c:var(--pink);
+  --x:-190px;
+  --y:-43px;
+  --r:-10deg;
+}
+
+.card:nth-child(3){
+  --c:var(--purple);
+  --x:-63px;
+  --y:-65px;
+  --r:-3deg;
+}
+
+.card:nth-child(4){
+  --c:var(--gold);
+  --x:63px;
+  --y:-65px;
+  --r:3deg;
+}
+
+.card:nth-child(5){
+  --c:var(--green);
+  --x:190px;
+  --y:-43px;
+  --r:10deg;
+}
+
+.card:nth-child(6){
+  --c:var(--orange);
+  --x:310px;
+  --y:5px;
+  --r:17deg;
+}
+
+/* RELEASE */
+
+.cards.released .card{
+  animation:release .8s forwards;
+}
+
+.cards.released .card:nth-child(2){
+  animation-delay:.07s;
+}
+
+.cards.released .card:nth-child(3){
+  animation-delay:.14s;
+}
+
+.cards.released .card:nth-child(4){
+  animation-delay:.21s;
+}
+
+.cards.released .card:nth-child(5){
+  animation-delay:.28s;
+}
+
+.cards.released .card:nth-child(6){
+  animation-delay:.35s;
+}
+
+@keyframes release{
+
+  0%{
+    opacity:0;
+    transform:translate(0,100px) scale(.1);
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      translate(var(--x),var(--y))
+      rotate(var(--r));
+  }
+}
+
+/* OPEN */
+
+.card.open{
+  z-index:100!important;
+  transform:
+    translate(0,0)
+    scale(1.55)!important;
+}
+
+.card.open .inner{
+  transform:rotateY(180deg);
+}
+
+/* SWIPE */
+
+.card.swiped-up{
+  pointer-events:none;
+  animation:none!important;
+  opacity:0!important;
+
+  transform:
+    translateY(-130vh)
+    rotate(15deg)
+    scale(.9)!important;
+
+  transition:
+    transform .55s cubic-bezier(.2,.8,.2,1),
+    opacity .4s ease!important;
+}
+  /* =========================================================
+   SIX IMAGE PROJECT GALLERY
+========================================================= */
+
+.project-gallery{
+  position:fixed;
+  inset:0;
+  background:#05040cf5;
+  backdrop-filter:blur(16px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:400;
+  padding:70px 20px 25px;
+}
+
+.project-gallery.show{
+  display:flex;
+  animation:galleryIn .45s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes galleryIn{
+  0%{
+    opacity:0;
+    transform:scale(.9);
+  }
+
+  100%{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+.project-gallery-box{
+  width:min(1050px,94vw);
+  max-height:88vh;
+  overflow:auto;
+  text-align:center;
+}
+
+.project-gallery-title{
+  margin:0 0 7px;
+  font:800 20px Orbitron;
+}
+
+.project-gallery-subtitle{
+  margin:0 0 22px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* SIX IMAGES */
+
+.six-project-images{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  width:100%;
+  align-items:center;
+  justify-items:center;
+}
+
+.gallery-project-image{
+  width:100%;
+  height:190px;
+  padding:7px;
+  border:1px solid #ffffff25;
+  border-radius:15px;
+  background:#ffffff09;
+  cursor:pointer;
+  transition:
+    transform .3s ease,
+    border-color .3s ease,
+    background .3s ease;
+}
+
+.gallery-project-image:hover{
+  transform:translateY(-6px) scale(1.025);
+  border-color:#ffffff55;
+  background:#ffffff12;
+}
+
+.gallery-project-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:9px;
+}
+
+/* FOCUSED IMAGE */
+
+.focused-project-image{
+  display:none;
+  position:fixed;
+  inset:0;
+  align-items:center;
+  justify-content:center;
+  padding:70px 30px 30px;
+  background:#05040cf8;
+  z-index:500;
+}
+
+.focused-project-image.show{
+  display:flex;
+}
+
+.focused-image-box{
+  width:min(1050px,94vw);
+  height:min(78vh,800px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:auto;
+}
+
+.focused-image-box img{
+  display:block;
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border:1px solid #ffffff30;
+  border-radius:14px;
+  background:#ffffff08;
+  cursor:zoom-in;
+  transition:transform .4s ease;
+}
+
+.focused-image-box img.zoomed{
+  transform:scale(1.35);
+  cursor:zoom-out;
+}
+
+/* =========================================================
+   MOBILE CARD DECK
+========================================================= */
+
+@media(max-width:700px){
+
+  .trust-img.desktop-only{
+    display:none;
+  }
+
+  .trust-section{
+    grid-template-columns:1fr;
+  }
+
+  .pika-inline{
+    width:52px;
+    height:52px;
+  }
+
+  .cards{
+    width:100%;
+    height:calc(100vh - 80px);
+  }
+
+  .card{
+    width:74vw;
+    max-width:270px;
+
+    height:108vw;
+    max-height:380px;
+
+    left:50%;
+    top:50%;
+
+    transform:
+      translate(-50%,-50%)
+      scale(.94);
+  }
+
+  /* DECK */
+
+  .card:nth-child(1){
+    --c:var(--cyan);
+    --deckY:0px;
+    --deckR:0deg;
+    z-index:6;
+  }
+
+  .card:nth-child(2){
+    --c:var(--pink);
+    --deckY:8px;
+    --deckR:0deg;
+    z-index:5;
+  }
+
+  .card:nth-child(3){
+    --c:var(--purple);
+    --deckY:16px;
+    --deckR:0deg;
+    z-index:4;
+  }
+
+  .card:nth-child(4){
+    --c:var(--gold);
+    --deckY:24px;
+    --deckR:0deg;
+    z-index:3;
+  }
+
+  .card:nth-child(5){
+    --c:var(--green);
+    --deckY:32px;
+    --deckR:0deg;
+    z-index:2;
+  }
+
+  .card:nth-child(6){
+    --c:var(--orange);
+    --deckY:40px;
+    --deckR:0deg;
+    z-index:1;
+  }
+
+  .cards.released .card{
+    animation:releaseMobile .65s forwards;
+  }
+
+  .cards.released .card:nth-child(2){
+    animation-delay:.04s;
+  }
+
+  .cards.released .card:nth-child(3){
+    animation-delay:.08s;
+  }
+
+  .cards.released .card:nth-child(4){
+    animation-delay:.12s;
+  }
+
+  .cards.released .card:nth-child(5){
+    animation-delay:.16s;
+  }
+
+  .cards.released .card:nth-child(6){
+    animation-delay:.20s;
+  }
+
+  @keyframes releaseMobile{
+
+    0%{
+      opacity:0;
+
+      transform:
+        translate(-50%,80%)
+        scale(.15);
+    }
+
+    70%{
+      opacity:1;
+    }
+
+    100%{
+      opacity:1;
+
+      transform:
+        translate(
+          -50%,
+          calc(-50% + var(--deckY))
+        )
+        rotate(var(--deckR))
+        scale(.94);
+    }
+  }
+
+  /* OPEN */
+
+  .card.open{
+    z-index:100!important;
+
+    transform:
+      translate(-50%,-50%)
+      scale(1.08)!important;
+  }
+
+  .card.open .inner{
+    transform:rotateY(180deg);
+  }
+
+  /* SWIPED */
+
+  .card.swiped-up{
+    transform:
+      translate(-50%,-150vh)
+      rotate(15deg)
+      scale(.8)!important;
+
+    opacity:0!important;
+  }
+
+  .sigil{
+    font-size:42px;
+  }
+
+  .back h2{
+    font-size:13px;
+  }
+
+  .front h3{
+    font-size:13px;
+  }
+
+  .front p,
+  .front li{
+    font-size:11px;
+    line-height:1.65;
+  }
+
+  .project-slot img{
+    height:135px;
+  }
+
+  /* MOBILE SIX IMAGE GALLERY */
+
+  .project-gallery{
+    padding:65px 12px 20px;
+  }
+
+  .project-gallery-box{
+    width:96vw;
+    max-height:88vh;
+  }
+
+  .project-gallery-title{
+    font-size:16px;
+  }
+
+  .project-gallery-subtitle{
+    margin-bottom:15px;
+    font-size:10px;
+  }
+
+  .six-project-images{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .gallery-project-image{
+    height:135px;
+    padding:5px;
+    border-radius:12px;
+  }
+
+  .focused-project-image{
+    padding:65px 12px 20px;
+  }
+
+  .focused-image-box{
+    width:96vw;
+    height:78vh;
+  }
+
+  .focused-image-box img.zoomed{
+    transform:scale(1.15);
+  }
+    }
+  /* =========================================================
+   CONTACT LINKS
+========================================================= */
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.contact-link {
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+
+  padding: 6px 12px;
+
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 6px;
+
+  transition: 0.25s ease;
+}
+
+.contact-link:hover {
+  transform: translateY(-2px);
+  border-color: currentColor;
+  text-shadow: 0 0 8px currentColor;
+}
+
+
+/* =========================================================
+   CONTACT LINK COLORS
+========================================================= */
+
+.contact-link.viber {
+  color: #8f7cff;
+}
+
+.contact-link.email {
+  color: #66e6ff;
+}
+
+.contact-link.dis {
+  color: #9c8cff;
+}
+
+
+/* =========================================================
+   DESKTOP CONTACT LINKS
+========================================================= */
+
+@media (min-width: 769px) {
+
+  .contact-links {
+    gap: 8px;
+  }
+
+  .contact-link {
+    padding: 8px 10px;
+    margin-right: 6px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .contact-link:hover {
+    transform: translateY(-3px);
+
+    text-shadow: 0 0 10px currentColor;
+    box-shadow: 0 0 12px currentColor;
+  }
+
+}
+</style>
+</head>
+<body>
+
+<main>
+
+  <div class="brand">
+    LILAKANT.STUDIO • ANIME CARD VAULT
+  </div>
+
+  <div class="eyebrow">
+    A NEW CHALLENGER HAS APPEARED
+  </div>
+
+  <h1>
+    Welcome
+
+    <span class="pika-inline">
+      <img
+        src="assets/welcome.gif"
+        alt="Pikachu">
+    </span><br>
+
+    To my Portfolio
+  </h1>
+
+  <p class="sub">
+    Modern websites, creative interfaces and smooth
+    digital experiences — crafted with anime energy.
+  </p>
+
+  <div class="folder-wrap">
+
+    <button
+      class="folder"
+      id="folder"
+      aria-label="Open card vault">
+    </button>
+
+  </div>
+
+  <div class="hint">
+    CLICK THE FOLDER TO OPEN THE CARDS
+  </div>
+
+  <div
+    class="project-preview"
+    id="product">
+
+    <img
+      src="assets/product.png"
+      alt="Project preview">
+
+  </div>
+
+  <div class="trust-section">
+
+    <div class="trust-box trusted">
+
+      <h4>TRUSTED CUSTOMERS</h4>
+
+      <p>
+        Customers who have successfully completed their purchase and maintained a reliable transaction history with us.
+      </p>
+
+   <!-- <img
+        class="trust-img desktop-only"
+        src="assets/trusted.png"
+        alt="Trusted customers"> -->
+
+      <a
+        class="discord"
+        href="https://discord.gg/uD3PF6kX">
+        ◈ Discord
+      </a>
+
+    </div>
+
+    <div class="trust-box untrusted">
+
+      <h4>UNTRUSTED ZONE</h4>
+
+      <p>
+        Customers with incomplete transactions, unresolved issues, or a history that requires additional verification before proceeding.
+      </p>
+
+   <!--   <img
+        class="trust-img desktop-only"
+        src="assets/untrusted.png"
+        alt="Untrusted zone"> -->
+
+      <a
+        class="discord"
+        href="https://discord.gg/uD3PF6kX">
+        ◈ Discord
+      </a>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<!-- =========================================================
+     CARD VAULT
+========================================================= -->
+
+<section
+  class="overlay"
+  id="overlay">
+
+  <button
+    class="close"
+    id="close">
+    ✕
+  </button>
+
+  <div
+    class="cards"
+    id="cards">
+
+
+    <!-- ABOUT ME -->
+
+    <div class="card">
+
+      <div class="inner">
+
+        <div class="face back">
+
+          <div class="sigil">
+            ✦
+          </div>
+
+          <h2>
+            ABOUT ME
+          </h2>
+
+          <div class="rarity">
+            ORIGIN CARD
+          </div>
+
+        </div>
+
+        <div class="face front">
+
+          <h3>
+            About Me
+          </h3>
+
+          <p>
+            I’m Lilakant — a creative developer focused
+            on building digital experiences with a
+            clean, modern and anime-inspired identity.
+          </p>
+
+          <p>
+            From websites and interactive interfaces to
+            Minecraft systems and custom projects,
+            I turn ideas into experiences people can use.
+          </p>
+
+          <p>
+            <strong>Code is the foundation.
+            Creativity is the identity.</strong>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MY PROJECTS -->
+
+    <div class="card">
+
+      <div class="inner">
+
+        <div class="face back">
+
+          <div class="sigil">
+            ◈
+          </div>
+
+          <h2>
+            MY PROJECTS
+          </h2>
+
+          <div class="rarity">
+            HOLO RARE
+          </div>
+
+        </div>
+
+        <div class="face front">
+
+          <h3>
+            My Projects
+          </h3>
+
+          <p>
+            Explore selected projects built through
+            creativity, experimentation and development.
+          </p>
+
+          <p>
+            <strong>Available for Purchase</strong><br>
+            Selected ready-made projects are available
+            under the Starter and Advanced packages.
+          </p>
+
+          <p>
+            <strong>College Website</strong><br>
+            A ready-made college website available for
+            purchase with essential customization options.<br>
+           <b>• features:-</b><br>
+            -premium and responsive UI<br>
+            -gallery with video and founder slots<br>
+            -facility section with courses<br>
+            -dark/light mode change<br>
+            
+          </p>
+
+          <p>
+            <span
+              class="card-link"
+              onclick="event.stopPropagation(); openPackageCard();">
+              FOR MORE INFO → SEE PACKAGES
+            </span>
+          </p>
+
+          <div class="project-grid">
+
+            <div
+              class="project-slot"
+              id="projectPreview">
+
+              <img
+                src="assets/product.png"
+                alt="My Project">
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SERVICES -->
+
+    <div class="card">
+
+      <div class="inner">
+
+        <div class="face back">
+
+          <div class="sigil">
+            ⚡
+          </div>
+
+          <h2>
+            SERVICES
+          </h2>
+
+          <div class="rarity">
+            POWER CARD
+          </div>
+
+        </div>
+
+        <div class="face front">
+
+          <h3>
+            Services
+          </h3>
+
+          <p>
+            Digital solutions built around your idea —
+            from websites and portfolios to interactive
+            interfaces and custom web experiences.
+          </p>
+
+          <p>
+            <strong>Web Development</strong><br>
+            Responsive websites, landing pages, UI and
+            modern interactive experiences.
+          </p>
+
+          <p>
+            <strong>Custom Builds</strong><br>
+            Features, layouts and systems tailored to
+            your project requirements.
+          </p>
+
+          <p>
+            <span
+              class="card-link"
+              onclick="event.stopPropagation(); openContactCard();">
+              DISCUSS YOUR PROJECT →
+            </span>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- PACKAGES -->
+
+    <div class="card">
+
+      <div class="inner">
+
+        <div class="face back">
+
+          <div class="sigil">
+            ◆
+          </div>
+
+          <h2>
+            PACKAGES
+          </h2>
+
+          <div class="rarity">
+            GOLD RARE
+          </div>
+
+        </div>
+
+        <div class="face front">
+
+          <h3>
+            Packages
+          </h3>
+
+          <p>
+            <strong>STARTER</strong><br>
+            Ready-made project with essential
+            customization. Core features remain
+            unchanged and the project may be sold
+            to other customers.
+            price ranges from 8k to 12k 
+          </p>
+
+          <p>
+            <strong>ADVANCED</strong><br>
+            Ready-made project with limited
+            customization. The project may still
+            be sold to other customers.
+            price ranges from 15k to 25k.
+          </p>
+
+          <p>
+            <strong>CUSTOM</strong><br>
+            Built around your requirements within
+            the agreed project scope. Exclusive to
+            you and not resold as the same custom build.
+            price range from 30k to 50k
+          </p>
+
+          <p>
+            <strong>PRICING</strong><br>
+            Price depends on the project and its
+            customization. Final price is shared
+            after enquiry.
+          </p>
+
+          <p>
+            <span
+              class="card-link"
+              onclick="event.stopPropagation(); openContactCard();">
+              ENQUIRE FOR FINAL PRICE →
+            </span>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SKILLS -->
+
+    <div class="card">
+
+      <div class="inner">
+
+        <div class="face back">
+
+          <div class="sigil">
+            ☄
+          </div>
+
+          <h2>
+            SKILLS
+          </h2>
+
+          <div class="rarity">
+            BOOST CARD
+          </div>
+
+        </div>
+
+        <div class="face front">
+
+          <h3>
+            Skills
+          </h3>
+
+          <p>
+            <strong>DEVELOPMENT</strong><br>
+            HTML • CSS • JavaScript • Skript
+          </p>
+
+          <p>
+            <strong>WEB</strong><br>
+            Responsive UI • Animation • Interactive
+            layouts • Modern interfaces
+          </p>
+
+          <p>
+            <strong>MINECRAFT</strong><br>
+            Plugin development • Server systems •
+            Custom mechanics • Automation
+          </p>
+
+          <p>
+            <strong>CREATIVE</strong><br>
+            UI concepts • Visual design • Anime-inspired
+            digital experiences
+          </p>
+
+          <p>
+            <em>Always learning. Always building.</em>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CONTACT -->
+
+    <div class="card">
+
+      <div class="inner">
+
+        <div class="face back">
+
+          <div class="sigil">
+            ☎
+          </div>
+
+          <h2>
+            CONTACT
+          </h2>
+
+          <div class="rarity">
+            SPECIAL CARD
+          </div>
+
+        </div>
+
+        <div class="face front">
+
+          <h3>
+            Contact
+          </h3>
+
+          <p>
+            Have a project, custom build or collaboration
+            in mind? Let’s turn the idea into something real.
+          </p>
+
+          <p>
+  <strong> EMAIL / DISCORD</strong><br>
+  Contact me with your requirements, project
+  details or purchase enquiry.<br>
+
+  <span class="contact-links">
+
+  <!--  <a
+      class="contact-link viber"
+      href="viber://chat?number=%2B977XXXXXXXXXX">
+      ◈ Viber
+    </a>-->
+
+    <a
+      class="contact-link email"
+      href="mailto:unionresurgence110@gmail.com">
+      ◈ Email
+    </a>
+
+    <a
+      class="contact-link dis"
+      href="https://discord.gg/uD3PF6kX"
+      target="_blank"
+      rel="noopener">
+      ◈ Discord
+    </a>
+
+  </span>
+          </p>
+
+          <p>
+            <strong>PROJECT ENQUIRIES</strong><br>
+            Final pricing is shared after understanding
+            the project and customization requirements.
+          </p>
+
+          <p>
+            <em>Let’s build something worth remembering.</em>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</section>
+<!-- =========================================================
+     SIX PROJECT IMAGE GALLERY
+========================================================= -->
+
+<section
+  class="project-gallery"
+  id="projectGallery">
+
+  <button
+    class="gallery-close"
+    id="projectGalleryClose">
+    ✕
+  </button>
+
+  <div class="project-gallery-box">
+
+    <h2 class="project-gallery-title">
+      PROJECT GALLERY
+    </h2>
+
+    <p class="project-gallery-subtitle">
+      Choose a project to view it
+    </p>
+
+    <div class="six-project-images">
+
+      <div class="gallery-project-image">
+        <img
+          src="assets/product1.png"
+          alt="Project 1">
+      </div>
+
+      <div class="gallery-project-image">
+        <img
+          src="assets/project2.png"
+          alt="Project 2">
+      </div>
+
+      <div class="gallery-project-image">
+        <img
+          src="assets/project3.png"
+          alt="Project 3">
+      </div>
+
+      <div class="gallery-project-image">
+        <img
+          src="assets/project4.png"
+          alt="Project 4">
+      </div>
+
+      <div class="gallery-project-image">
+        <img
+          src="assets/project5.png"
+          alt="Project 5">
+      </div>
+
+      <div class="gallery-project-image">
+        <img
+          src="assets/project6.gif"
+          alt="Project 6">
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       FOCUSED SINGLE IMAGE
+  ======================================================== -->
+
+  <div
+    class="focused-project-image"
+    id="focusedProjectImage">
+
+    <button
+      class="focused-close"
+      id="focusedClose">
+      ✕
+    </button>
+
+    <div class="focused-image-box">
+
+      <img
+        id="focusedImage"
+        src=""
+        alt="Focused project">
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const overlay =
+  document.getElementById("overlay");
+
+const cardsBox =
+  document.getElementById("cards");
+
+const cards =
+  [...document.querySelectorAll(".card")];
+
+const folder =
+  document.getElementById("folder");
+
+const closeButton =
+  document.getElementById("close");
+
+const product =
+  document.getElementById("product");
+
+const projectPreview =
+  document.getElementById("projectPreview");
+
+const projectGallery =
+  document.getElementById("projectGallery");
+
+const projectGalleryClose =
+  document.getElementById("projectGalleryClose");
+
+const focusedProjectImage =
+  document.getElementById("focusedProjectImage");
+
+const focusedClose =
+  document.getElementById("focusedClose");
+
+const focusedImage =
+  document.getElementById("focusedImage");
+
+const galleryProjectImages =
+  [
+    ...document.querySelectorAll(
+      ".gallery-project-image"
+    )
+  ];
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let opened = null;
+
+let startY = 0;
+
+let isAnimating = false;
+
+let justSwiped = false;
+
+
+/* =========================================================
+   OPEN VAULT
+========================================================= */
+
+function openVault(){
+
+  overlay.classList.add("show");
+
+  cards.forEach(card => {
+
+    card.classList.remove("open");
+
+    card.classList.remove("swiped-up");
+
+    card.style.display = "";
+
+  });
+
+  opened = null;
+
+  isAnimating = false;
+
+  justSwiped = false;
+
+  cardsBox.classList.remove("released");
+
+  void cardsBox.offsetWidth;
+
+  cardsBox.classList.add("released");
+
+}
+
+
+/* =========================================================
+   CLOSE VAULT
+========================================================= */
+
+function closeVault(){
+
+  overlay.classList.remove("show");
+
+  cards.forEach(card => {
+
+    card.classList.remove("open");
+
+    card.classList.remove("swiped-up");
+
+    card.style.display = "";
+
+  });
+
+  cardsBox.classList.remove("released");
+
+  opened = null;
+
+  isAnimating = false;
+
+  justSwiped = false;
+
+}
+
+
+/* =========================================================
+   OPEN CARD
+========================================================= */
+
+function openCard(card){
+
+  if(
+    card.classList.contains("swiped-up")
+  ){
+    return;
+  }
+
+  cards.forEach(c => {
+
+    c.classList.remove("open");
+
+  });
+
+  card.classList.add("open");
+
+  opened = card;
+
+}
+
+
+/* =========================================================
+   FOLDER
+========================================================= */
+
+folder.addEventListener(
+  "click",
+  openVault
+);
+
+
+/* =========================================================
+   PROJECT PREVIEW
+   MAIN PREVIEW -> OPEN VAULT -> MY PROJECTS
+========================================================= */
+
+product.addEventListener(
+  "click",
+  () => {
+
+    openVault();
+
+    setTimeout(
+      () => {
+
+        openCard(cards[1]);
+
+      },
+      850
+    );
+
+  }
+);
+
+
+/* =========================================================
+   CLOSE VAULT
+========================================================= */
+
+closeButton.addEventListener(
+  "click",
+  closeVault
+);
+
+
+/* =========================================================
+   CARD CLICK
+========================================================= */
+
+cards.forEach(card => {
+
+  card.addEventListener(
+  "click",
+  e => {
+
+    if(
+      e.target.closest("#projectPreview") ||
+      e.target.closest("a")
+    ){
+      return;
+    }
+
+      if(justSwiped){
+
+        justSwiped = false;
+
+        return;
+
+      }
+
+      if(
+        card.classList.contains("swiped-up")
+      ){
+        return;
+      }
+
+      if(opened === card){
+
+        card.classList.remove("open");
+
+        opened = null;
+
+        return;
+
+      }
+
+      openCard(card);
+
+    }
+  );
+
+
+  /* =======================================================
+     TOUCH START
+  ======================================================= */
+
+  card.addEventListener(
+    "touchstart",
+    e => {
+
+      if(e.target.closest("#projectPreview")){
+        return;
+      }
+
+      startY =
+        e.touches[0].clientY;
+
+    },
+    {
+      passive:true
+    }
+  );
+
+
+  /* =======================================================
+     TOUCH END
+  ======================================================= */
+
+  card.addEventListener(
+  "touchend",
+  e => {
+
+    if(
+      e.target.closest("#projectPreview") ||
+      e.target.closest("a")
+    ){
+      return;
+      }
+
+      const endY =
+        e.changedTouches[0].clientY;
+
+      const distance =
+        endY - startY;
+
+
+      /*
+        Open card:
+        tap/swipe closes it.
+      */
+
+      if(opened === card){
+
+        card.classList.remove("open");
+
+        opened = null;
+
+        return;
+
+      }
+
+
+      /* SWIPE UP */
+
+      if(distance < -60){
+
+        if(isAnimating){
+
+          return;
+
+        }
+
+        isAnimating = true;
+
+        justSwiped = true;
+
+        card.classList.add(
+          "swiped-up"
+        );
+
+
+        setTimeout(
+          () => {
+
+            card.style.display =
+              "none";
+
+            isAnimating = false;
+
+            const allGone =
+              cards.every(
+                c =>
+                  c.classList.contains(
+                    "swiped-up"
+                  )
+              );
+
+
+            if(allGone){
+
+              setTimeout(
+                () => {
+
+                  cards.forEach(c => {
+
+                    c.classList.remove(
+                      "swiped-up"
+                    );
+
+                    c.classList.remove(
+                      "open"
+                    );
+
+                    c.style.display =
+                      "";
+
+                  });
+
+                  opened = null;
+
+                  cardsBox.classList.remove(
+                    "released"
+                  );
+
+                  void cardsBox.offsetWidth;
+
+                  cardsBox.classList.add(
+                    "released"
+                  );
+
+                  justSwiped = false;
+
+                },
+                250
+              );
+
+            }
+
+          },
+          600
+        );
+
+      }
+
+    },
+    {
+      passive:true
+    }
+  );
+
+});
+
+
+/* =========================================================
+   OPEN SIX IMAGE GALLERY
+========================================================= */
+
+function openProjectGallery(){
+
+  /*
+    Make sure focused image is hidden
+    whenever gallery opens.
+  */
+
+  focusedProjectImage.classList.remove(
+    "show"
+  );
+
+  focusedImage.src = "";
+
+  projectGallery.classList.add(
+    "show"
+  );
+
+}
+
+
+/* =========================================================
+   PROJECT PREVIEW IMAGE
+========================================================= */
+
+function openPackageCard(){
+
+  if(!overlay.classList.contains("show")){
+    openVault();
+  }
+
+  setTimeout(() => {
+    openCard(cards[3]);
+  }, overlay.classList.contains("show") ? 0 : 850);
+
+}
+
+function openContactCard(){
+
+  if(!overlay.classList.contains("show")){
+    openVault();
+  }
+
+  setTimeout(() => {
+    openCard(cards[5]);
+  }, overlay.classList.contains("show") ? 0 : 850);
+
+}
+
+function handleProjectPreviewOpen(e){
+
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+
+  openProjectGallery();
+
+}
+
+projectPreview.addEventListener(
+  "click",
+  handleProjectPreviewOpen
+);
+
+/*
+  On phones, touchend bubbles to the parent .card.
+  Without stopping it here, the card can immediately
+  close itself before the gallery opens.
+*/
+projectPreview.addEventListener(
+  "touchstart",
+  e => {
+    e.stopPropagation();
+  },
+  { passive:true }
+);
+
+projectPreview.addEventListener(
+  "touchend",
+  handleProjectPreviewOpen,
+  { passive:false }
+);
+
+
+/* =========================================================
+   SIX IMAGE CLICK
+========================================================= */
+
+galleryProjectImages.forEach(
+  item => {
+
+    item.addEventListener(
+      "click",
+      e => {
+
+        e.stopPropagation();
+
+        const image =
+          item.querySelector("img");
+
+        /*
+          Put selected image into
+          the focused viewer.
+        */
+
+        focusedImage.src =
+          image.src;
+
+        focusedImage.alt =
+          image.alt;
+
+        /*
+          Hide the six-image layout.
+        */
+
+        focusedProjectImage.classList.add(
+          "show"
+        );
+
+        focusedImage.classList.remove(
+          "zoomed"
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   FOCUSED IMAGE CLOSE
+========================================================= */
+
+focusedClose.addEventListener(
+  "click",
+  e => {
+
+    e.stopPropagation();
+
+    /*
+      Only close the focused image.
+      The six-image gallery stays open.
+    */
+
+    focusedProjectImage.classList.remove(
+      "show"
+    );
+
+    focusedImage.classList.remove(
+      "zoomed"
+    );
+
+  }
+);
+
+
+/* =========================================================
+   FOCUSED IMAGE ZOOM
+========================================================= */
+
+focusedImage.addEventListener(
+  "click",
+  e => {
+
+    e.stopPropagation();
+
+    focusedImage.classList.toggle(
+      "zoomed"
+    );
+
+  }
+);
+
+
+/* =========================================================
+   GALLERY CLOSE
+========================================================= */
+
+projectGalleryClose.addEventListener(
+  "click",
+  e => {
+
+    e.stopPropagation();
+
+    focusedProjectImage.classList.remove(
+      "show"
+    );
+
+    focusedImage.classList.remove(
+      "zoomed"
+    );
+
+    focusedImage.src = "";
+
+    projectGallery.classList.remove(
+      "show"
+    );
+
+  }
+);
+
+
+/* =========================================================
+   FOCUSED BACKGROUND CLICK
+========================================================= */
+
+focusedProjectImage.addEventListener(
+  "click",
+  e => {
+
+    if(e.target === focusedProjectImage){
+
+      focusedProjectImage.classList.remove(
+        "show"
+      );
+
+      focusedImage.classList.remove(
+        "zoomed"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   GALLERY BACKGROUND CLICK
+========================================================= */
+
+projectGallery.addEventListener(
+  "click",
+  e => {
+
+    /*
+      Only close the main gallery when
+      clicking its empty background.
+
+      Clicking focused image/background
+      is handled separately.
+    */
+
+    if(
+      e.target === projectGallery
+    ){
+
+      focusedProjectImage.classList.remove(
+        "show"
+      );
+
+      focusedImage.classList.remove(
+        "zoomed"
+      );
+
+      focusedImage.src = "";
+
+      projectGallery.classList.remove(
+        "show"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   ESC KEY
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  e => {
+
+    if(e.key !== "Escape"){
+      return;
+    }
+
+
+    /*
+      First ESC:
+      focused image -> six images
+    */
+
+    if(
+      focusedProjectImage.classList.contains(
+        "show"
+      )
+    ){
+
+      focusedProjectImage.classList.remove(
+        "show"
+      );
+
+      focusedImage.classList.remove(
+        "zoomed"
+      );
+
+      return;
+
+    }
+
+
+    /*
+      Second ESC:
+      six images -> project gallery closed
+    */
+
+    if(
+      projectGallery.classList.contains(
+        "show"
+      )
+    ){
+
+      projectGallery.classList.remove(
+        "show"
+      );
+
+      focusedImage.src = "";
+
+      return;
+
+    }
+
+
+    /*
+      Otherwise close card vault.
+    */
+
+    if(
+      overlay.classList.contains(
+        "show"
+      )
+    ){
+
+      closeVault();
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
